@@ -27,9 +27,10 @@ export class ResponseInterceptor implements NestInterceptor {
     let newResponse = null;
     const req = context.switchToHttp().getRequest();
     const { statusCode, originalUrl, method, params, query, body } = req;
+    const newStatus = statusCode == null ? 200 : statusCode;
     if (Object.keys(_data).includes('data') || Object.keys(_data).includes('components')) {
       newResponse = {
-        code: statusCode,
+        code: newStatus,
         message: 'success'
       };
       newResponse = Object.assign({...newResponse, ..._data})
@@ -37,7 +38,7 @@ export class ResponseInterceptor implements NestInterceptor {
       newResponse = _data['formiogrid'];
     } else {
       newResponse = {
-        code: statusCode == null ? 200 : statusCode,
+        code: newStatus,
         message: 'success',
         data: _data,
       };
