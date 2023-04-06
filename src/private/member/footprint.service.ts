@@ -1,6 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FilterOperator, PaginateQuery } from 'nestjs-paginate';
-import { Connection } from 'typeorm';
+import { Connection, getRepository } from 'typeorm';
+import { Footprint } from './entities/footprint.entity';
+import { Categories } from './entities/categories.entity';
+import { Origins } from './entities/origins.entity';
+import { Activities } from './entities/activities.entity';
+import { Measurement } from './entities/measurement.entity';
 
 
 
@@ -35,7 +40,6 @@ export class FootprintService {
     ${where} 
     OFFSET ${pagination_meta.page} ROWS 
     FETCH NEXT ${pagination_meta.items} ROWS ONLY;`;
-    console.log(query)
     try {
       datos =  await this.connection.query(
         query
@@ -83,8 +87,264 @@ export class FootprintService {
     return datos;
   }
 
+  async post(entity, dto, property){
 
-  //TODO: POS,  PATH, DELETE
+    // Se validan datos repetidos
+    if (property){
+      const data = await this.connection
+        .getRepository(entity)
+        .createQueryBuilder('e')
+        .where(`e.${property} = :dto`, {
+          dto: dto[property]
+        })
+        .getOne();
+      if (data) {
+        throw new HttpException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'Este nombre ya ha sido registrado.',
+        }, HttpStatus.FORBIDDEN);
+      }
+    }
+
+    let row;
+    // Inicia la una nueva conexión a la base de datos
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try{
+      // Se realiza la transacción
+      row = await queryRunner.manager.save(entity, dto);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      // No se pudo realizar la transacción
+      await queryRunner.rollbackTransaction();
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: error!.response!.error ?? 'Error al crear un nuevo registro.',
+      }, HttpStatus.FORBIDDEN);
+    } finally {
+      // Se cierra la conexión a la base de datos
+      await queryRunner.release();
+    }
+    return row;
+  }
+
+  async postPrinfoot(entity, dto, property){
+
+    // Validación de los IDs
+    let measurement_id;
+    try {
+     
+      const consulta = await this.consultas(dto)
+        
+       if (consulta[2]['id_fp_category'] != consulta[0]['id_fp_category']  || consulta[2]['id_fp_origin'] != consulta[1]['id_fp_origin'])  {
+         throw new HttpException({
+           status: HttpStatus.BAD_REQUEST,
+           message: 'Los IDs son incorrectos.1',
+         }, HttpStatus.BAD_REQUEST);
+       }
+       
+       measurement_id = consulta[1]['measurement'].id_u_measurement
+       dto.id_u_measurement= measurement_id
+    } catch (e){
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Los IDs son incorrectos.2',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+
+    // Se validan datos repetidos
+    if (property){
+      const data = await this.connection
+        .getRepository(entity)
+        .createQueryBuilder('e')
+        .where(`e.${property} = :dto`, {
+          dto: dto[property]
+        })
+        .getOne();
+      if (data) {
+        throw new HttpException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'Este nombre ya ha sido registrado.',
+        }, HttpStatus.FORBIDDEN);
+      }
+    }
+
+    let row;
+    // Inicia la una nueva conexión a la base de datos
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try{
+      // Se realiza la transacción
+      row = await queryRunner.manager.save(entity, dto);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      // No se pudo realizar la transacción
+      await queryRunner.rollbackTransaction();
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: error!.response!.error ?? 'Error al crear un nuevo registro.',
+      }, HttpStatus.FORBIDDEN);
+    } finally {
+      // Se cierra la conexión a la base de datos
+      await queryRunner.release();
+    }
+    return row;
+  }
+
+
+  async patch(id:number, entity, dto, property, property_id){
+
+    if (!isNaN(+id) && +id >= 1) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Contenido no encontrado.',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+    let old_data = (await this.connection
+        .getRepository(entity)
+        .findByIds([id]))[0] as object;
+
+    if (!old_data) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Contenido no encontrado.',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+    // Se validan datos repetidos
+    const data = await this.connection
+      .getRepository(entity)
+      .createQueryBuilder('e')
+      .where(`e.${property} = :dto`, {
+        dto: dto[property]
+      })
+      .getOne();
+
+      
+    if (data && data[property_id] != old_data[property_id]) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'Este nombre ya ha sido registrado.',
+      }, HttpStatus.FORBIDDEN);
+    }
+
+    // Asigna los valores
+    old_data = {...old_data, ...dto};
+    old_data['updated_at'] = new Date();
+
+    // Se actualizan
+    await this.connection.getRepository(entity).update(id, old_data);
+    return await this.connection.getRepository(entity).findByIds([id])
+  }
+
+  async patchPrintfoot(id:number, entity, dto, property, property_id){
+
+    if (!isNaN(+id) && +id <= 0) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Contenido no encontrado.',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+     // Validación de los IDs
+     let measurement_id;
+     try {
+        const consulta = await this.consultas(dto)
+        
+       if (consulta[2]['id_fp_category'] != consulta[0]['id_fp_category']  || consulta[2]['id_fp_origin'] != consulta[1]['id_fp_origin'])  {
+         throw new HttpException({
+           status: HttpStatus.BAD_REQUEST,
+           message: 'Los IDs son incorrectos.1',
+         }, HttpStatus.BAD_REQUEST);
+       }
+       
+       measurement_id = consulta[1]['measurement'].id_u_measurement
+       dto.id_u_measurement= measurement_id
+     } catch (e){
+       throw new HttpException({
+         status: HttpStatus.BAD_REQUEST,
+         message: 'Los IDs son incorrectos.2',
+       }, HttpStatus.BAD_REQUEST);
+     }
+
+     
+    let old_data = (await this.connection
+        .getRepository(entity)
+        .findByIds([id]))[0] as object;
+
+    if (!old_data) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'Contenido no encontrado.',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+    // Asigna los valores
+    old_data = {...old_data, ...dto};
+    old_data['updated_at'] = new Date();
+
+    // Se actualizan
+    await this.connection.getRepository(entity).update(id, old_data);
+    return await this.connection.getRepository(entity).findByIds([id])
+  }
+
+
+  async delete(id:number, entity){
+
+    if (!isNaN(+id) && +id <= 0) {
+      throw new HttpException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        message: 'No se pudo eliminar el registro.',
+      }, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
+    try {
+      const rows = await this.connection.getRepository(entity).findByIds([id])
+      await this.connection.getRepository(entity).delete(rows);
+      return 'Registo eliminado.'
+    } catch(Exception) {
+      throw new HttpException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        message: 'No se pudo eliminar el registro, tiene datos relacionados.',
+      }, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+  }
+
+
+  private async consultas(dto) {
+    const category = await this.connection
+    .getRepository(Categories)
+    .createQueryBuilder('c')
+    .where(`c.id_fp_category = :id`, {
+      id: dto.id_fp_category
+    })
+    .getOneOrFail();
+
+  const origin = await this.connection
+    .getRepository(Origins)
+    .createQueryBuilder('o')
+    .innerJoinAndSelect('o.measurement', 'm', 'm.id_u_measurement = o.id_u_measurement')
+    .where(`o.id_fp_origin = :id`, {
+      id: dto.id_fp_origin
+    })
+    .getOneOrFail();
+
+  const activity = await this.connection
+    .getRepository(Activities)
+    .createQueryBuilder('a')
+    .where(`a.id_fp_category = :category AND a.id_fp_origin = :origin`, {
+      category: category.id_fp_category,
+      origin: origin.id_fp_origin
+    })
+    .getOneOrFail();
+    return [category, origin, activity];
+  }
+
+
   private pagination(page:number, items:number, total_items: object[]){
     // Se asigna valores por defecto para el numero de pagina y la cantidad de items
     if (isNaN(+page) || page <= 1){
