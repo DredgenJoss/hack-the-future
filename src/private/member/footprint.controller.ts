@@ -25,10 +25,27 @@ export class FootprintController {
     private readonly footprintService: FootprintService,
     ) {}
 
-  @Get('test')
-  async testGet(){
-    return 'test';
+  @Get('dashboard')
+  async dashboard(    
+    @Query('categoryIds') categoryIds: string, 
+    @Query('originIds') originIds: string,
+    @Query('activityIds') activityIds: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('type') type: string,
+    @Query('timePeriod') timePeriod: string,
+    ) {
+   return this.footprintService.dashboard(
+    categoryIds,
+    originIds,
+    activityIds,
+    startDate,
+    endDate,
+    type,
+    timePeriod,
+   );
   }
+
   @Get('categories')
   async categoriesGet(
     @Query('page') page: number, 

@@ -19,5 +19,5 @@ export class CreateFootprintDto {
 
     @IsNotEmpty({message: 'Para registrar una huella de carbono se necesita la origen.'})
     id_fp_origin: number;
-
+    
 }
