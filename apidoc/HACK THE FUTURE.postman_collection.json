@@ -2,102 +2,820 @@
 	"info": {
 		"_postman_id": "4737ed86-df58-4c41-b37a-f5d5c684ea25",
 		"name": "HACK THE FUTURE",
+		"description": "En esta colección se encuentran documentados los endpoint para cada una de las tablas de la base de datos con su correspondiente CRUD y un endpoint adicional donde se pueden realizar todas las configuraciones que se estén disponibles por medio de los parámetros para visualizar los datos con su respectivo formato.\n\nHay Gets que cuenta con paginación y estos mismos necesitan un ID de otro endpoint que esté relacionado para poder visualizar los datos, no todos necesitan de un ID.\n\nlos Unicos Gets que necesitan uno o varios IDs son:\n\n1) Origin\n- Get All\n\n2) Footprint\n- Get All\n\n1) Dashboard\n- Get by parameters",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Categorias",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/api/footprint/categories",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"api",
-						"footprint",
-						"categories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Medidas",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/api/footprint/measurement",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"api",
-						"footprint",
-						"measurement"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Origen",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{server}}/api/footprint/origins/1",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"api",
-						"footprint",
-						"origins",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Actividades",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "sad",
-						"value": "asd",
-						"type": "default",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "{{server}}/api/footprint/activities?categoryId=1&originId=1",
-					"host": [
-						"{{server}}"
-					],
-					"path": [
-						"api",
-						"footprint",
-						"activities"
-					],
-					"query": [
-						{
-							"key": "categoryId",
-							"value": "1"
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/categories?page=1&limit=3&search=Emis",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								},
+								{
+									"key": "limit",
+									"value": "3",
+									"description": "Límite de ítems por página"
+								},
+								{
+									"key": "search",
+									"value": "Emis",
+									"description": "Parámetro de búsqueda"
+								}
+							]
 						},
-						{
-							"key": "originId",
-							"value": "1"
-						}
-					]
+						"description": "Este endpoint lista los datos de las categorías y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/categories/{{categoryId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories",
+								"{{categoryId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede obtener un registro de la categorías por medio de un ID especificado en la ruta."
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_name\": \"{{nombre}}\",\n    \"category_description\": \"{{descripcion}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/categories",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories"
+							]
+						},
+						"description": "Desde Este endpoint se puede crear un nuevo registro para las categorías."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_fp_category\": {{categoryId}},\n    \"category_name\": \"{{nombre}}\",\n    \"category_description\": \"{{descripcion}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/categories/{{categoryId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories",
+								"{{categoryId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede actualizar un registro para las caregorías."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/categories/{{categoryId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories",
+								"{{categoryId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede eliminar un registro para las categorías."
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"description": "En este carpeta se encuentran todos los endpoints necesarios realizar un CRUD para las categorías."
+		},
+		{
+			"name": "Measurement",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/measurement?page=1&limit=3&search=Galon",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"measurement"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								},
+								{
+									"key": "limit",
+									"value": "3",
+									"description": "Límite de ítems por página"
+								},
+								{
+									"key": "search",
+									"value": "Galon",
+									"description": "Parámetro de búsqueda"
+								}
+							]
+						},
+						"description": "Este endpoint lista los datos de las unidades de medida y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/measurement/{{measurementId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"measurement",
+								"{{measurementId}}"
+							]
+						},
+						"description": "Este endpoint solo obtiene un único registro, el cual de específica su id en la ruta."
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"measurement_name\": \"{{nombre}}\",\n    \"measurement_description\": \"{{descripcion}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/measurement",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"measurement"
+							]
+						},
+						"description": "Desde Este endpoint se puede crear un nuevo registro para las unidades de medida."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_u_measurement\": {{measurementId}},\n    \"measurement_name\": \"{{nombre}}\",\n    \"measurement_description\": \"{{descripcion}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/measurement/{{measurementId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"measurement",
+								"{{measurementId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede actualizar un registro para las unidades de medida."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/categories/{{measurementId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"categories",
+								"{{measurementId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede eliminar un registro para de las unidades de medida."
+					},
+					"response": []
+				}
+			],
+			"description": "En este carpeta se encuentran todos los endpoints necesarios realizar un CRUD para las unidades de medida."
+		},
+		{
+			"name": "Origin",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/origins/1?page=1&limit=5&search=Aceite",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"origins",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"description": "Límite de ítems por página"
+								},
+								{
+									"key": "search",
+									"value": "Aceite",
+									"description": "Parámetro de búsqueda"
+								}
+							]
+						},
+						"description": "Este endpoint lista los datos de las origen del carbono y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/origins/{{originId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"origins",
+								"{{originId}}"
+							]
+						},
+						"description": "Este endpoint solo obtiene un único registro, el cual de específica su id en la ruta."
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"origin_name\": \"{{nombre}}\",\n    \"origin_description\": \"{{descripcion}}\",\n    \"id_u_measurement\": {{measurementId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/origins",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"origins"
+							]
+						},
+						"description": "Desde Este endpoint se puede crear un nuevo registro para él los medios que producen huella de carbono."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_fp_origin\": {{originId}},\n    \"origin_name\": \"{{nombre}}\",\n    \"origin_description\": \"{{descripcion}}\",\n    \"id_u_measurement\": {{measurementId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/origins/{{originId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"origins",
+								"{{originId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede actualizar un registro para él los medios que producen huella de carbono."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/origins/{{originId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"origins",
+								"{{originId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede eliminar un registro para él los medios que producen huella de carbono."
+					},
+					"response": []
+				}
+			],
+			"description": "En este carpeta se encuentran todos los endpoints necesarios realizar un CRUD para el origen de las huellas de carbono."
+		},
+		{
+			"name": "Activities",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/activities?categoryId=1&originId=1&search=Mantenimiento de&limit=1&page=1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"activities"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "1",
+									"description": "ID de categoría"
+								},
+								{
+									"key": "originId",
+									"value": "1",
+									"description": "ID de origen"
+								},
+								{
+									"key": "search",
+									"value": "Mantenimiento de",
+									"description": "Parámetro de búsqueda"
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"description": "Límite de ítems por página"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								}
+							]
+						},
+						"description": "Este endpoint lista los datos de las actividades y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/activities/{{activityId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"activities",
+								"{{activityId}}"
+							]
+						},
+						"description": "Este endpoint solo obtiene un único registro, el cual de específica su id en la ruta."
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"activity_name\": \"{{nombre}}\",\n    \"activity_description\": \"{{descripcion}}\",\n    \"id_fp_category\": {{categoryId}},\n    \"id_fp_origin\": {{originId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/activities",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"activities"
+							]
+						},
+						"description": "Desde Este endpoint se puede crear un nuevo registro para las actividades que producen huella de carbono."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_activity\": {{activityId}},\n    \"activity_name\": \"{{nombre}}\",\n    \"activity_description\": \"{{descripcion}}\",\n    \"id_fp_category\": {{categoryId}},\n    \"id_fp_origin\": {{originId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/activities/{{activityId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"activities",
+								"{{activityId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede actualizar un registro para las actividades que producen huella de carbono."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/activities/{{activityId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"activities",
+								"{{activityId}}"
+							]
+						},
+						"description": "Desde Este endpoint se puede eliminar un registro para las actividades que producen huella de carbono."
+					},
+					"response": []
+				}
+			],
+			"description": "En este carpeta se encuentran todos los endpoints necesarios realizar un CRUD para las actividades que generan huellas de carbono."
+		},
+		{
+			"name": "Footprint",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint?categoryId=1&originId=1&activityId=1&startDate=10-10-2022&endDate=11-11-2022",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "1",
+									"description": "ID de categoría"
+								},
+								{
+									"key": "originId",
+									"value": "1",
+									"description": "ID de origen"
+								},
+								{
+									"key": "activityId",
+									"value": "1",
+									"description": "ID de la actividad que produce carbono"
+								},
+								{
+									"key": "startDate",
+									"value": "10-10-2022",
+									"description": "Fecha inicial"
+								},
+								{
+									"key": "endDate",
+									"value": "11-11-2022",
+									"description": "Fecha final"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Este endpoint lista los datos relacionados con las cantidades y de donde proviene el impacto de la huella de carbono y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/{{footprintId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"{{footprintId}}"
+							]
+						},
+						"description": "Este endpoint solo obtiene un único registro, el cual de específica su id en la ruta."
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": {{quantity}},\n    \"note\": \"{{nota}}\",\n    \"id_fp_category\": {{categoryId}},\n    \"id_activity\": {{activityId}},\n    \"id_fp_origin\": {{originId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint"
+							]
+						},
+						"description": "Este endpoint permite crear un nuevo registro de datos relacionados con las cantidades y de donde proviene el impacto de la huella de carbono."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_c_footprints\": {{footprintId}},\n    \"quantity\": {{quantity}},\n    \"note\": \"{{nota}}\",\n    \"id_fp_category\": {{categoryId}},\n    \"id_activity\": {{activityId}},\n    \"id_fp_origin\": {{originId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/footprint/{{footprintId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"{{footprintId}}"
+							]
+						},
+						"description": "Este endpoint permite actualizar un registro de datos relacionados con las cantidades y de donde proviene el impacto de la huella de carbono y los datos que muestra llevan paginación."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/footprint/{{footprintId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"{{footprintId}}"
+							]
+						},
+						"description": "Este endpoint permite eliminar un registro de datos relacionados con las cantidades y de donde proviene el impacto de la huella de carbono por su ID el cual esta especificado en su ruta."
+					},
+					"response": []
+				}
+			],
+			"description": "En este carpeta se encuentran todos los endpoints necesarios realizar un CRUD para manipular los registros relacionados que se tienen con las huella de carbono."
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get by parameters",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "sad",
+								"value": "asd",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/footprint/dashboard?categoryIds=1,2,3&originIds=1,2,3&activityIds=1,2,3&startDate=1-1-2022&endDate=12-31-2022&type=porcentaje&timePeriod=mes",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"footprint",
+								"dashboard"
+							],
+							"query": [
+								{
+									"key": "categoryIds",
+									"value": "1,2,3",
+									"description": "IDs de categoría"
+								},
+								{
+									"key": "originIds",
+									"value": "1,2,3",
+									"description": "IDs de el origen de las huellas de carbono"
+								},
+								{
+									"key": "activityIds",
+									"value": "1,2,3",
+									"description": "IDs de las actividades que generan huellas de carbono"
+								},
+								{
+									"key": "startDate",
+									"value": "1-1-2022",
+									"description": "Fecha de inicio"
+								},
+								{
+									"key": "endDate",
+									"value": "12-31-2022",
+									"description": "Fecha de fin"
+								},
+								{
+									"key": "type",
+									"value": "porcentaje",
+									"description": "Tipo de operación (total o porcentaje)"
+								},
+								{
+									"key": "timePeriod",
+									"value": "mes",
+									"description": "Intervalos de tiempo que se mostraran (mes, trimeste o semestre)"
+								}
+							]
+						},
+						"description": "Este endpoint permite visualizar los datos de manera flexible tomando en cuenta los parámetros en un formato que permita graficarlos, ya sea en un gráfico de pastel o de barras, ya que permite sumar las cantidades o mostrar los totales en porcentaje."
+					},
+					"response": []
+				}
+			],
+			"description": "En este carpeta se encuentra un endpoint que permite visualizar los datos con el formato necesario para graficarlos."
 		}
 	],
 	"event": [
@@ -124,6 +842,51 @@
 		{
 			"key": "server",
 			"value": "localhost:80",
+			"type": "default"
+		},
+		{
+			"key": "categoryId",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "measurementId",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "originId",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "activityId",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "footprintId",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "nombre",
+			"value": "Nombre test",
+			"type": "default"
+		},
+		{
+			"key": "descripcion",
+			"value": "Descripcion test",
+			"type": "default"
+		},
+		{
+			"key": "nota",
+			"value": "Nota test",
+			"type": "default"
+		},
+		{
+			"key": "quantity",
+			"value": "100",
 			"type": "default"
 		}
 	]

@@ -198,7 +198,7 @@ export class FootprintService {
 
   async patch(id:number, entity, dto, property, property_id){
 
-    if (!isNaN(+id) && +id >= 1) {
+    if (!isNaN(+id) && +id < 1) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         message: 'Contenido no encontrado.',
