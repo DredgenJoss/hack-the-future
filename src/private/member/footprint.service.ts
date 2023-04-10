@@ -566,7 +566,7 @@ export class FootprintService {
       }
     }
     if (originWhere || categoryWhere || activityWhere) {
-      if (footprintWhere && !( categoryWhere || activityWhere)) {
+      if (footprintWhere) {
         footprintWhere += 'AND';
       }
       footprintWhere += originWhere.replace('WHERE', '') + ' ';
